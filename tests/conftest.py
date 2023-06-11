@@ -18,7 +18,7 @@ from .utils import (
 def pytest_configure(config):
     CommandLineArgs.configure(
         url=config.getoption("--url"),
-        entrypoint=config.getoption("--entry-point"),
+        entrypoint=Web3.toChecksumAddress(config.getoption("--entry-point")),
         ethereum_node=config.getoption("--ethereum-node"),
         launcher_script=config.getoption("--launcher-script"),
     )
