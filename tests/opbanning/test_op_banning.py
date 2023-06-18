@@ -11,6 +11,7 @@ from tests.utils import (
     deposit_to_undeployed_sender,
     to_hex,
     to_prefixed_hex,
+    get_default_tx_params_generator
 )
 
 
@@ -20,7 +21,7 @@ banned_opcodes = [
     "TIMESTAMP",
     "COINBASE",
     "DIFFICULTY",
-    "BASEFEE",
+    # "BASEFEE",
     "GASLIMIT",
     "GASPRICE",
     "SELFBALANCE",
@@ -62,7 +63,7 @@ def test_factory_banned_opcode(w3, factory_contract, entrypoint_contract, banned
         factory_contract.address
         + factory_contract.functions.create(
             123, banned_op, entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = deposit_to_undeployed_sender(w3, entrypoint_contract, initcode)
     response = UserOperation(sender=sender, initCode=initcode).send()

@@ -4,8 +4,8 @@ from tests.utils import (
     dump_mempool,
     send_bundle_now,
     deploy_contract,
+    sleep,
 )
-import time
 
 
 def assert_useroperation_event(entrypoint_contract, userop, from_block):
@@ -74,7 +74,6 @@ def test_codehash_changed(w3, entrypoint_contract):
         userop.send()
         assert dump_mempool() == [userop]
         send_bundle_now()
-        time.sleep(9)
-        print('#dump_mempool timestamp=', int(time.time()*1000))
+        sleep(9, "waiting for remove handled userop from mempool")
         assert dump_mempool() == []
         assert_useroperation_event(entrypoint_contract, userop, from_block=block_number)

@@ -2,6 +2,7 @@ import os
 
 from solcx import compile_source
 from .types import RPCRequest, UserOperation, CommandLineArgs
+import time
 
 
 def compile_contract(contract):
@@ -162,3 +163,33 @@ def to_prefixed_hex(s):
 
 def to_hex(s):
     return s.encode().hex()
+
+
+def get_default_tx_params_generator():
+    txparams = {
+        'value': 0,
+        'gas': lambda web3, tx: web3.eth.estimate_gas(tx),
+        'gasPrice': lambda web3, tx: web3.eth.generate_gas_price(tx),
+        'maxFeePerGas': (
+            lambda web3, tx:
+            web3.eth.max_priority_fee
+        ),
+        'maxPriorityFeePerGas': lambda web3, tx: web3.eth.max_priority_fee,
+        'chainId': lambda web3, tx: web3.eth.chain_id,
+    }
+    return txparams
+
+def sleep(s, msg=""):
+    print( "\r\nsleep {} s {}".format(s, msg) )
+    time.sleep(s)
+
+def checkMempoolDump(pool1, pool2):
+    if len(pool1) != len(pool2):
+        print( "\r\npool1 length is {}, pool2 length is {}".format(len(pool1), len(pool2)) )
+        return False
+
+    return True
+
+def printWithTime(msg):
+    ts = int(time.time() * 1000)
+    print("\r\n" + msg, "ts=", ts)

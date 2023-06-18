@@ -6,6 +6,7 @@ from tests.types import RPCErrorCode
 from tests.utils import (
     UserOperation,
     assert_rpc_error,
+    get_default_tx_params_generator
 )
 from tests.utils import get_sender_address
 
@@ -74,7 +75,7 @@ def test_unstaked_sender_storage_initcode_drop(
         factory_contract.address
         + factory_contract.functions.create(
             123, "", entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = get_sender_address(w3, initCode)
     entrypoint_contract.functions.depositTo(sender).transact(
@@ -120,7 +121,7 @@ def test_unstaked_factory_storage_ok(w3, entrypoint_contract, factory_contract, 
         factory_contract.address
         + factory_contract.functions.create(
             123, rule, entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = get_sender_address(w3, initCode)
     entrypoint_contract.functions.depositTo(sender).transact(
@@ -142,7 +143,7 @@ def test_unstaked_factory_storage_drop(w3, entrypoint_contract, factory_contract
         factory_contract.address
         + factory_contract.functions.create(
             123, rule, entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = get_sender_address(w3, initCode)
     entrypoint_contract.functions.depositTo(sender).transact(
@@ -165,7 +166,7 @@ def test_staked_factory_storage_ok(w3, entrypoint_contract, factory_contract, ru
         factory_contract.address
         + factory_contract.functions.create(
             123, rule, entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = get_sender_address(w3, initCode)
     entrypoint_contract.functions.depositTo(sender).transact(
@@ -217,7 +218,7 @@ def test_unstaked_paymaster_storage_initcode_drop(
         factory_contract.address
         + factory_contract.functions.create(
             123, "", entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     paymasterAndData = paymaster_contract.address + rule.encode().hex()
     response = UserOperation(
@@ -240,7 +241,7 @@ def test_staked_paymaster_storage_initcode_ok(
         factory_contract.address
         + factory_contract.functions.create(
             123, "", entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     paymasterAndData = paymaster_contract.address + rule.encode().hex()
     assert (

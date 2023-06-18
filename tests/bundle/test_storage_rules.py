@@ -11,8 +11,8 @@ from tests.utils import (
     get_sender_address,
     deploy_and_deposit,
     deposit_to_undeployed_sender,
+    get_default_tx_params_generator
 )
-
 
 def assert_ok(response):
     try:
@@ -32,12 +32,13 @@ def with_initcode(build_userop_func):
             "TestRulesFactory",
             ctrparams=[entrypoint_contract.address],
         )
+        
         userop = build_userop_func(w3, entrypoint_contract, contract, rule)
         initcode = (
             factory_contract.address
             + factory_contract.functions.create(
                 123, "", entrypoint_contract.address
-            ).build_transaction()["data"][2:]
+            ).build_transaction(get_default_tx_params_generator())["data"][2:]
         )
         sender = deposit_to_undeployed_sender(w3, entrypoint_contract, initcode)
         userop.sender = sender
@@ -64,7 +65,7 @@ def build_userop_for_factory(w3, entrypoint_contract, factory_contract, rule):
         factory_contract.address
         + factory_contract.functions.create(
             123, rule, entrypoint_contract.address
-        ).build_transaction()["data"][2:]
+        ).build_transaction(get_default_tx_params_generator())["data"][2:]
     )
     sender = get_sender_address(w3, initcode)
     tx_hash = entrypoint_contract.functions.depositTo(sender).transact(
